@@ -55,9 +55,9 @@ class Calendar
 			lastDay = dayNames[lastDate.getDay()],
 			$calendarNode = $('<table/>').addClass('forsaken_calendar_table'),
 			$thead = $('<thead/>').appendTo($calendarNode),
+			$topUI = $('<tr/>').appendTo($thead),
 			$daysNode = $('<tr/>').addClass('calendarDayNames').appendTo($thead),
-			$calendarBody = $('<tbody/>').appendTo($calendarNode),
-			$topUI = $('<tr/>').appendTo($thead);
+			$calendarBody = $('<tbody/>').appendTo($calendarNode);
 		
 		this.addNextAndLastMonthUI($topUI);
 		
@@ -115,6 +115,7 @@ class Calendar
 	
 	addNextAndLastMonthUI($tr)
 	{
+		$tr.addClass('forsaken_calendar_month_chooser');
 		let lastMonth = new Date(this.date.getFullYear(), this.date.getMonth() - 1);
 		let nextMonth = new Date(this.date.getFullYear(), this.date.getMonth() + 1);
 		
@@ -124,7 +125,7 @@ class Calendar
 				this.getPreviousMonth();
 			}).text(`<- ${monthNames[lastMonth.getMonth()]}`)
 		).appendTo($tr);
-		$('<th colspan="5"/>').html(`Phases for ${monthNames[this.date.getMonth()]}`).appendTo($tr);
+		$('<th colspan="5"/>').html(`Phases for ${monthNames[this.date.getMonth()]} ${this.date.getFullYear()}`).appendTo($tr);
 		
 		$('<th/>').append(
 			$('<a href="#"/>').click((evt)=>{
