@@ -54,8 +54,12 @@ class Calendar
 			firstDay = dayNames[firstDate.getDay()],
 			lastDay = dayNames[lastDate.getDay()],
 			$calendarNode = $('<table/>').addClass('forsaken_calendar_table'),
-			$daysNode = $('<tr/>').addClass('calendarDayNames').appendTo($('<thead/>').appendTo($calendarNode)),
-			$calendarBody = $('<tbody/>').appendTo($calendarNode);
+			$thead = $('<thead/>').appendTo($calendarNode),
+			$daysNode = $('<tr/>').addClass('calendarDayNames').appendTo($thead),
+			$calendarBody = $('<tbody/>').appendTo($calendarNode),
+			$topUI = $('<tr/>').appendTo($thead);
+		
+		this.addNextAndLastMonthUI($topUI);
 		
 		for(let day of dayNames)
 		{
@@ -102,11 +106,18 @@ class Calendar
 			$currentRow.append($('<td/>').html('&nbsp;').addClass('notThisMonth'));
 		}
 		
+		let $tfoot = $('<tfoot>').appendTo($calendarNode);
+		let $tr = $('<tr/>').appendTo($tfoot);
+		this.addNextAndLastMonthUI($tr);
+		
+		this.node.empty().append($calendarNode);
+	}
+	
+	addNextAndLastMonthUI($tr)
+	{
 		let lastMonth = new Date(this.date.getFullYear(), this.date.getMonth() - 1);
 		let nextMonth = new Date(this.date.getFullYear(), this.date.getMonth() + 1);
 		
-		let $tfoot = $('<tfoot>').appendTo($calendarNode);
-		let $tr = $('<tr/>').appendTo($tfoot);
 		$('<th/>').append(
 			$('<a href="#"/>').click((evt)=>{
 				evt.preventDefault();
@@ -121,8 +132,6 @@ class Calendar
 				this.getNextMonth();
 			}).text(`${monthNames[nextMonth.getMonth()]} ->`)
 		).appendTo($tr);
-		
-		this.node.empty().append($calendarNode);
 	}
 	
 	getFirstAndLastDaysOfMonth(date)
@@ -198,7 +207,7 @@ class Calendar
 			afterPadding = Math.abs(afterPadding);
 			for (let i = 0; i < afterPadding; i++)
 			{
-				paddedPhases[lastDay - i] = {phase:data.next.phase};
+				paddedPhases[(lastDay - i) - 1] = {phase:data.next.phase};
 			}
 		}
 		let previousPhase = data.previous;
