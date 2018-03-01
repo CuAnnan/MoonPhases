@@ -3,7 +3,20 @@
 let monthNames =['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 	dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
 	auspices = {'Full Moon':'Rahu', 'Last Quarter':'Elodoth', 'First Quarter':'Elodoth', 'New Moon':'Irraka', 'Gibbous':'Cahalith', 'Crescent':'Ithaeur'},
-	phaseSymbols = {'Rahu':'🌕', 'Elodoth':'🌓', 'Irraka':'🌑', 'Ithaeur':'🌒', 'Cahalith':'🌖'};
+	phaseSymbols = {'Rahu':'🌕', 'Elodoth':'🌓', 'Irraka':'🌑', 'Ithaeur':'🌒', 'Cahalith':'🌖'},
+	mainPhases = {
+		'First Quarter':{before:'New Moon', after:'Full Moon', padding: 1},
+		'Full Moon':{before:'First Quarter', after:'Last Quarter', padding: 2},
+		'Last Quarter':{before:'Full Moon', after:'New Moon', padding: 1},
+		'New Moon':{before:'Last Quarter', after:'First Quarter', padding: 2}
+	},
+	// after each main phase comes the following minor phases,
+	minorPhases = {
+		'First Quarter':'Gibbous',
+		'Full Moon':'Gibbous',
+		'Last Quarter':'Crescent',
+		'New Moon':'Crescent'
+	};
 
 class Calendar
 {
@@ -17,6 +30,16 @@ class Calendar
 			this.node = $('<div/>').attr('id', nodeId).appendTo($('body'));
 		}
 		this.setDate(new Date());
+	}
+	
+	getPreviousMonth()
+	{
+		this.setDate(new Date(this.date.getFullYear(), this.date.getMonth() - 1));
+	}
+	
+	getNextMonth()
+	{
+		this.setDate(new Date(this.date.getFullYear(), this.date.getMonth() + 1));
 	}
 	
 	setDate(date)
@@ -64,18 +87,41 @@ class Calendar
 				);
 			}
 			
+			
 			let padded = moonPhases.padded[i],
 				paddedPhase = moonPhases.padded[padded.phase],
 				auspice = auspices[padded.phase];
+			console.log(padded);
 			
 			$td.addClass(auspice);
 			$td.append($(`<div class="moonPhase">${phaseSymbols[auspice]}</div>`));
+			
 		}
 		
 		for(let i = lastDate.getDay(); i< 6; i++)
 		{
 			$currentRow.append($('<td/>').html('&nbsp;').addClass('notThisMonth'));
 		}
+		
+		let lastMonth = new Date(this.date.getFullYear(), this.date.getMonth() - 1);
+		let nextMonth = new Date(this.date.getFullYear(), this.date.getMonth() + 1);
+		
+		let $tfoot = $('<tfoot>').appendTo($calendarNode);
+		let $tr = $('<tr/>').appendTo($tfoot);
+		$('<th/>').append(
+			$('<a href="#"/>').click((evt)=>{
+				evt.preventDefault();
+				this.getPreviousMonth();
+			}).text(`<- ${monthNames[lastMonth.getMonth()]}`)
+		).appendTo($tr);
+		$('<th colspan="5"/>').html(`Phases for ${monthNames[this.date.getMonth()]}`).appendTo($tr);
+		
+		$('<th/>').append(
+			$('<a href="#"/>').click((evt)=>{
+				evt.preventDefault();
+				this.getNextMonth();
+			}).text(`${monthNames[nextMonth.getMonth()]} ->`)
+		).appendTo($tr);
 		
 		this.node.empty().append($calendarNode);
 	}
@@ -97,76 +143,82 @@ class Calendar
 			}),
 			response = {
 				days:[],
-				phases:[],
-				padded:null
-			},
-			{firstDate, lastDate} = this.getFirstAndLastDaysOfMonth(this.date),
-			lastDay = lastDate.getDate(),
-			paddedData = [],
-			padPhase = (day, phase, extraDay)=>{
-				paddedData[day] = phase;
-				if(day > 0)
-				{
-					paddedData[day - 1] = phase;
-					if(extraDay && day > 1)
-					{
-						paddedData[day - 2] = phase;
-					}
-				}
-				if(day < lastDay)
-				{
-					paddedData[day + 1] = phase;
-					if(extraDay && day < lastDay - 1)
-					{
-						paddedData[day + 2] = phase;
-					}
-				}
-				
-				if(extraDay)
-				{
-					let missingPhase = (phase.phase == 'Full Moon'?'Gibbous':'Crescent');
-					for(let i = 3; i < 6; i++)
-					{
-						if(day > i)
-						{
-							paddedData[day - i] = {phase:missingPhase};
-						}
-						if(day < (lastDay - (i)))
-						{
-							paddedData[day + i] = {phase:missingPhase};
-						}
-					}
-				}
+				phases:[]
 			};
+		console.log(data);
 		
-		for(let phase of data.results[0].phases)
+		for(let phase of data.months[0].phases)
 		{
 			let indexedDay = phase.day - 1;
-			
-			padPhase(indexedDay, {phase:phase.phase}, phase.phase == 'Full Moon' || phase.phase == 'New Moon');
 			
 			// javascript date object days are 0 indexed. Need to offset the nasa data by -1
 			response.days.push(phase.day-1);
 			response.phases.push(phase);
 		}
-		for(let i = 0; i < lastDate.getDate(); i++)
+		
+		response.padded = this.padPhases(data);
+		
+		return response;
+	}
+	
+	padPhases(data)
+	{
+		let {firstDate, lastDate} = this.getFirstAndLastDaysOfMonth(this.date);
+		let lastDay = lastDate.getDate();
+		let paddedPhases = [];
+		let phaseData = data.months[0].phases;
+		let lastDayOfPreviousMonth = new Date(this.date.getFullYear(), this.date.getMonth(), -1).getDate();
+		
+		// first layer of padding, just add the present main phases to the days that pad before and after them
+		for(let date of phaseData)
 		{
-			if(!paddedData[i])
+			let day = parseInt(date.day) - 1,
+				padding = mainPhases[date.phase].padding,
+				shallowClone = {phase:date.phase},
+				bottomBound = Math.max(0, day - padding),
+				upperBound = Math.min(lastDay, day + padding);
+			
+			for(let i = bottomBound; i <= upperBound; i++)
 			{
-				if(i > 0)
-				{
-					paddedData[i] = paddedData[i - 1];
-				}
-				else
-				{
-					paddedData[i] = paddedData[i + 1];
-				}
+				paddedPhases[i] = shallowClone;
 			}
 		}
 		
-		response.padded = paddedData;
+		// do the padding at the edges of the calendar if needed
+		let beforePadding = (parseInt(data.previous.day) - 1) + mainPhases[data.previous.phase].padding - lastDayOfPreviousMonth;
+		if(beforePadding > 0)
+		{
+			for(let i = 0; i < beforePadding; i++)
+			{
+				paddedPhases[i] = {phase:data.previous.phase};
+			}
+		}
 		
-		return response;
+		let afterPadding = (parseInt(data.next.day) - 1) - mainPhases[data.previous.phase].padding;
+		if(afterPadding < 0)
+		{
+			afterPadding = Math.abs(afterPadding);
+			for (let i = 0; i < afterPadding; i++)
+			{
+				paddedPhases[lastDay - i] = {phase:data.next.phase};
+			}
+		}
+		let previousPhase = data.previous;
 		
+		for(let i = 0; i < lastDay; i++)
+		{
+			if(!paddedPhases[i])
+			{
+				paddedPhases[i] = {
+					'phase':minorPhases[previousPhase.phase]
+				};
+			}
+			else
+			{
+				previousPhase = paddedPhases[i];
+			}
+		}
+		
+		return paddedPhases;
 	}
 }
