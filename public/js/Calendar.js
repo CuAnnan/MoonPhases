@@ -67,7 +67,7 @@ class Calendar
 			let padded = moonPhases.padded[i],
 				paddedPhase = moonPhases.padded[padded.phase],
 				auspice = auspices[padded.phase];
-			console.log(auspice);
+			
 			$td.addClass(auspice);
 			$td.append($(`<div class="moonPhase">${phaseSymbols[auspice]}</div>`));
 		}
@@ -165,7 +165,6 @@ class Calendar
 		}
 		
 		response.padded = paddedData;
-		console.log(paddedData);
 		
 		return response;
 		
