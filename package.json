@@ -1,6 +1,6 @@
 {
   "name": "moonphases",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -14,5 +14,18 @@
     "mongodb": "^3.0.3",
     "morgan": "~1.9.0",
     "serve-favicon": "~2.4.5"
-  }
+  },
+  "description": "This is a the server and client side architecture for reading and presenting the moon phases according to the rule of thumb used for this Chronicle.",
+  "main": "app.js",
+  "bin": {
+    "moonphases": "dataImport.js"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/CuAnnan/werewolf-moon-phases.git"
+  },
+  "author": "wing",
+  "license": "GPL-3.0",
+  "homepage": "https://bitbucket.org/CuAnnan/werewolf-moon-phases#readme"
 }
