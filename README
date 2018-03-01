@@ -1,0 +1,15 @@
+# Moon Phase Tracker
+
+This is a the server and client side architecture for reading and presenting the moon phases according to the rule of thumb used for this Chronicle.
+
+It uses the Moon Phase data that NASA expose, which contains the date and time for the First Quarter, Full Moon, Last Quarter and New Moon lunar events. It then pads the days around these events one out or two out and fills the rest of the days in according to what goes between these events.
+
+This does mean that every now and then the Cahalith or Ithaeur will get an extra day of Auspicious moon in the sky. To any complaints regarding this; the developer promptly replies: there are no real werewolves, the rules are super unclear about how to handle deviations from the idealised "28 day lunar cycle where all events happen exactly at midnight for your convenience, this is provided for you for free by a non-player non-member, quit your fucking whinging you godsdamned assholes".
+
+If you're not happy to use my bandwidth for this, you can download the source code yourself, build the database yourself from the dataset, which I also provide, get node running on your own server, and run the code yourself. This is all released under the [GNU Public Licence (3.0)](https://www.gnu.org/licenses/gpl-3.0.en.html).
+
+### What to do in case of bugs
+Let me know. I'll try to get around to patching as needed. Or, better yet, clone; patch; issue a pull request.
+
+### Where can I find this
+At present, it's hosted at wing.so-4pt.net/moonPhases
