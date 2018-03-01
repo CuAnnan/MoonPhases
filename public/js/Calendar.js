@@ -96,9 +96,7 @@ class Calendar
 				paddedPhase = moonPhases.padded[padded.phase],
 				auspice = auspices[padded.phase];
 			
-			$td.addClass(auspice);
-			$td.append($(`<div class="moonPhase">${phaseSymbols[auspice]}</div>`));
-			
+			$td.append($('<div/>').addClass('forsaken_calendar_moon forsaken_calendar_'+auspice.toLowerCase()));
 		}
 		
 		for(let i = lastDate.getDay(); i< 6; i++)

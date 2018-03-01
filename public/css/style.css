@@ -45,3 +45,34 @@
 {
     font-size: 1.5em;
 }
+
+.forsaken_calendar_moon
+{
+    background-repeat: no-repeat;
+    height: 75px;
+}
+
+.forsaken_calendar_rahu
+{
+    background-image:url("/images/fullMoon.png");
+}
+
+.forsaken_calendar_elodoth
+{
+    background-image:url("/images/halfMoon.png");
+}
+
+.forsaken_calendar_ithaeur
+{
+    background-image:url("/images/crescentMoon.png");
+}
+
+.forsaken_calendar_cahalith
+{
+    background-image:url("/images/gibbous.png");
+}
+
+.forsaken_calendar_irraka
+{
+    background-image:url("/images/newMoon.png");
+}
