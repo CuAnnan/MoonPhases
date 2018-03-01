@@ -1,0 +1,47 @@
+.forsaken_calendar_table, .forsaken_calendar_table th, .forsaken_calendar_table td
+{
+    border: 1px solid black;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    table-layout: fixed;
+}
+
+.forsaken_calendar_table.forsaken_calendar_table td, .forsaken_calendar_table th
+{
+    width: 100px;
+}
+
+.forsaken_calendar_table.forsaken_calendar_table tbody td, .forsaken_calendar_table tbody th
+{
+    height: 100px;
+    vertical-align: top;
+    padding: 0px;
+    margin: 0px;
+}
+
+.forsaken_calendar_table .notThisMonth
+{
+    background-color: black;
+}
+
+.forsaken_calendar_dateHolder
+{
+    background-color: #999999;
+    padding: 0px;
+    margin: 0px;
+}
+
+.forsaken_calendar_outer
+{
+    position: relative;
+}
+
+.forsaken_calendar_phase, .forsaken_calendar_time
+{
+    font-size: 0.65em;
+}
+
+.moonPhase
+{
+    font-size: 1.5em;
+}
