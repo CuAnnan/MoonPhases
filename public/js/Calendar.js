@@ -129,7 +129,7 @@ class Calendar
 		for(let i in phaseDays)
 		{
 			
-			$(`<li>${i}: ${phaseDays[i]}</li>`).appendTo(this.datesNode);
+			$(`<li>${i} - ${auspices[i]}: ${phaseDays[i]}</li>`).appendTo(this.datesNode);
 		}
 	}
 	
