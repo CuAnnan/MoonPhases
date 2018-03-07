@@ -23,12 +23,22 @@ class Calendar
 	constructor(data)
 	{
 		data = data ? data : {};
-		let nodeId = data.nodeId ? data.nodeId : 'calenderContainer';
-		this.node = $(`#${nodeId}`);
-		if(!this.node)
+		let calendarNodeId = data.calendarNodeId ? data.calendarNodeId : 'calenderContainer';
+		let datesNodeId = data.datesNodeId ? data.datesNodId : 'datesList';
+		let $body = $('body');
+		
+		this.calendarNode = $(`#${calendarNodeId}`);
+		if(!this.calendarNode)
 		{
-			this.node = $('<div/>').attr('id', nodeId).appendTo($('body'));
+			this.calendarNode = $('<div/>').attr('id', calendarNodeId).appendTo($body);
 		}
+		
+		this.datesNode = $(`#${datesNodeId}`);
+		if(!this.datesNode)
+		{
+			this.datesNode = $('<div/>').attr('id', datesNodeId).appendTo($body);
+		}
+		
 		this.setDate(new Date());
 	}
 	
@@ -45,7 +55,7 @@ class Calendar
 	setDate(date)
 	{
 		this.date = date;
-		this.getLunarData().then(this.render.bind(this))
+		this.getLunarData().then(this.render.bind(this));
 	}
 	
 	render(moonPhases)
@@ -108,7 +118,24 @@ class Calendar
 		let $tr = $('<tr/>').appendTo($tfoot);
 		this.addNextAndLastMonthUI($tr);
 		
-		this.node.empty().append($calendarNode);
+		this.calendarNode.empty().append($calendarNode);
+		this.datesNode.empty();
+		let phaseDays = {};
+		
+		for(let date of moonPhases.padded)
+		{
+			phaseDays[date.phase] = phaseDays[date.phase] ? phaseDays[date.phase] + 1 : 1;
+		}
+		for(let i in phaseDays)
+		{
+			
+			$(`<li>${i}: ${phaseDays[i]}</li>`).appendTo(this.datesNode);
+		}
+	}
+	
+	generateEventsList()
+	{
+	
 	}
 	
 	addNextAndLastMonthUI($tr)
@@ -182,13 +209,14 @@ class Calendar
 				padding = mainPhases[date.phase].padding,
 				shallowClone = {phase:date.phase},
 				bottomBound = Math.max(0, day - padding),
-				upperBound = Math.min(lastDay, day + padding);
+				upperBound = Math.min(lastDay - 1, day + padding);
 			
 			for(let i = bottomBound; i <= upperBound; i++)
 			{
 				paddedPhases[i] = shallowClone;
 			}
 		}
+		
 		
 		// do the padding at the edges of the calendar if needed
 		let beforePadding = (parseInt(data.previous.day) - 1) + mainPhases[data.previous.phase].padding - lastDayOfPreviousMonth;
@@ -206,7 +234,9 @@ class Calendar
 			afterPadding = Math.abs(afterPadding);
 			for (let i = 0; i < afterPadding; i++)
 			{
-				paddedPhases[(lastDay - i) - 1] = {phase:data.next.phase};
+				let index = (lastDay - i) - 1;
+				console.log(index);
+				paddedPhases[index] = {phase:data.next.phase};
 			}
 		}
 		let previousPhase = data.previous;

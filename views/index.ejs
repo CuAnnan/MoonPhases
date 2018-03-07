@@ -8,7 +8,24 @@
     <body>
         <h1>Forsaken Moon Tracking Thing</h1>
 
-        <div id="calenderContainer"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8" id="calenderContainer"></div>
+                <div class="col-md-4" id="datesContainer">
+                    <h2>Calendar dates</h2>
+                    <ul id="datesList"></ul>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="aboutProject">
+            <h2>How data is calculated</h2>
+            <p>There is a database on the backend, consisting of every full moon, half moon and new moon from 1900 to 2100.</p>
+            <p>The front end pages the database, asking for the events for a given month. Two days are padded to the side of each full and new moon giving them five days each. One day is padded to each side of the half moon, giving it six days in total. The remaining days are defined as crescent and gibbous depending on which phase went before them. This leads to an uneven distribution of these phases but, on average, they also get six days each.</p>
+            <p>For more detail on how this is achieved, look to the padPhases method of the Calendar class.</p>
+            <p>This widget is provided as-is. It's a GPL project, its primary git repository is <a href="https://bitbucket.org/CuAnnan/werewolf-moon-phases" target="_blank">here on BitBucket</a> and synced <a href="https://github.com/CuAnnan/MoonPhases">to github</a>.</p>
+        </div>
 
         <script type="text/javascript" src="/js/jquery.min.js"></script>
         <script type="text/javascript" src="/js/bootstrap.min.js"></script>
