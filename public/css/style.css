@@ -49,6 +49,7 @@
 .forsaken_calendar_moon
 {
     background-repeat: no-repeat;
+    background-position: center;
     height: 75px;
 }
 
@@ -75,4 +76,10 @@
 .forsaken_calendar_irraka
 {
     background-image:url("/images/newMoon.png");
+}
+
+.today
+{
+    font-weight: bold;
+    background-color: lightgray;
 }

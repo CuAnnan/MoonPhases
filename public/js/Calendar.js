@@ -16,7 +16,8 @@ let monthNames =['January', 'February', 'March', 'April', 'May', 'June', 'July',
 		'Full Moon':'Gibbous',
 		'Last Quarter':'Crescent',
 		'New Moon':'Crescent'
-	};
+	},
+	today = new Date();
 
 class Calendar
 {
@@ -67,7 +68,8 @@ class Calendar
 			$thead = $('<thead/>').appendTo($calendarNode),
 			$topUI = $('<tr/>').appendTo($thead),
 			$daysNode = $('<tr/>').addClass('calendarDayNames').appendTo($thead),
-			$calendarBody = $('<tbody/>').appendTo($calendarNode);
+			$calendarBody = $('<tbody/>').appendTo($calendarNode),
+			thisMonth = this.date.getMonth() == today.getMonth();
 		
 		this.addNextAndLastMonthUI($topUI);
 		
@@ -82,6 +84,7 @@ class Calendar
 			$currentRow.append($('<td/>').html('&nbsp;').addClass('notThisMonth'));
 		}
 		
+		
 		for(let i = 0; i < lastDate.getDate(); i++)
 		{
 			let day = (firstDate.getDay() + i) % 7;
@@ -90,7 +93,13 @@ class Calendar
 				$currentRow = $('<tr/>').appendTo($calendarBody);
 			}
 			let $td = $(`<td><span class="forsaken_calendar_dateHolder">${i+1}</span></td>`).appendTo($currentRow);
-			
+			if(thisMonth)
+			{
+				if(i+1 == today.getDate())
+				{
+					$td.addClass('today');
+				}
+			}
 			
 			let index =moonPhases.days.indexOf(i);
 			if(index >= 0)
